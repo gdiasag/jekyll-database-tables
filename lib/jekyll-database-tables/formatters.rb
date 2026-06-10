@@ -2,7 +2,7 @@
 
 module Jekyll
   module DatabaseTables
-    # Abstact base class for table formatters.
+    # Abstract base class for table formatters.
     #
     # Subclasses must implement {#render}, {#format_row}, and {#separator}.
     # Shared rendering utilities are available via {Formatter::Helpers}.
@@ -118,7 +118,7 @@ module Jekyll
       private
 
       def total_width(widths)
-        widths.sum + (widths.length - 1) * 3
+        widths.sum + ((widths.length - 1) * 3)
       end
     end
   end

@@ -12,8 +12,8 @@ module Jekyll
 
     # Immutable value object representing a single table row.
     #
-    # @!attributee [r] cells
-    #   $return [Array<String>] the cell values for this row, in column order
+    # @!attribute [r] cells
+    #   @return [Array<String>] the cell values for this row, in column order
     Row   = Data.define(:cells)
   end
 end
