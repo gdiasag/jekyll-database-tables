@@ -1,0 +1,33 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  release:
+    if: github.event.repository.fork == false
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      attestations: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ruby
+          rubygems: latest
+      - name: Configure trusted publishing credentials
+        uses: rubygems/configure-rubygems-credentials@v2.0.0
+      - name: Run checks
+        run: |
+          bundle exec rubocop
+          bundle exec rake test
+      - name: Release
+        run: bundle exec rake release
+      - name: Attest
+        uses: actions/attest@v4
+        with:
+          subject-path: pkg/*.gem
