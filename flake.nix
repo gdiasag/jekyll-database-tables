@@ -16,23 +16,17 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
-        ruby = pkgs.ruby_3_4;
+        rubyEnv = pkgs.bundlerEnv {
+          name = "jekyll-database-tables";
+          gemdir = ./.;
+          groups = [ "default" "development" "test" ];
+        };
       in
       {
         devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
-            ruby
-            bundler
-          ];
-
+          packages = [ rubyEnv ];
           shellHook = ''
-            export GEM_HOME="$PWD/.gem"
-            export PATH="$GEM_HOME/bin:$PATH"
-
             echo "Ruby $(ruby --version)"
-            echo "Bundler $(bundler --version)"
-
-            bundle install --quiet
           '';
         };
       }
