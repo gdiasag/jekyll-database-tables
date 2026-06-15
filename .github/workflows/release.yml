@@ -19,6 +19,7 @@ jobs:
         with:
           ruby-version: ruby
           rubygems: latest
+          bundler-cache: true
       - name: Configure trusted publishing credentials
         uses: rubygems/configure-rubygems-credentials@v2.0.0
       - name: Run checks
