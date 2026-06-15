@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 gemspec
 
 group :development, :test do
+  gem 'benchmark'
   gem 'minitest'
   gem 'rake'
   gem 'rubocop-jekyll', '~> 0.14.0'

@@ -8,6 +8,7 @@
 
   outputs =
     {
+      self,
       nixpkgs,
       flake-utils,
       ...
@@ -16,16 +17,18 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
-        rubyEnv = pkgs.bundlerEnv {
-          name = "jekyll-database-tables";
-          gemdir = ./.;
-          groups = [ "default" "development" "test" ];
-        };
       in
       {
         devShells.default = pkgs.mkShell {
-          packages = [ rubyEnv ];
+          packages = with pkgs; [ ruby_3_4 bundler ];
+
           shellHook = ''
+            export GEM_HOME="$PWD/.gem"
+            export PATH="$GEM_HOME/bin:$PATH"
+
+            bundle config set --local frozen true
+            bundle install --quiet
+
             echo "Ruby $(ruby --version)"
           '';
         };
