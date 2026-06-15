@@ -11,6 +11,10 @@ Style/Documentation:
     - 'test/**/*'
     - 'lib/jekyll-database-tables.rb'
 
+Metrics/ClassLength:
+  Exclude:
+    - 'test/**/*'
+
 Metrics/MethodLength:
   Max: 15
   Exclude:

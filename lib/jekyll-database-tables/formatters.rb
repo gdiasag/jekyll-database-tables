@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'cgi'
+
 module Jekyll
   module DatabaseTables
     # Abstract base class for table formatters.
@@ -80,42 +82,48 @@ module Jekyll
       def render(table, title: nil)
         widths = column_widths(table)
 
-        lines = +''
-        lines << "#{title.center(total_width(widths)).rstrip}\n" if title
-
-        lines << format_row(table.headers, widths)
-        lines << "\n"
-        lines << separator(widths)
-        lines << "\n"
-
-        table.rows.each do |row|
-          lines << format_row(row.cells, widths)
-          lines << "\n"
-        end
-
-        "<pre class=\"psql-table\">\n#{lines}</pre>\n"
+        <<~HTML
+          <pre class="psql-table">
+          #{table_rows(table, widths, title).join("\n")}
+          </pre>
+        HTML
       end
 
-      # Formats a row as space-padded cells joined by +|+.
+      # formats a row as space-padded cells joined by +|+.
       #
-      # @param cells [Array<#to_s>] the cell values to render
-      # @param widths [Array<Integer>] the column widths to left-justify against
-      # @return [String] the formatted row, with trailing whitespace stripped
+      # @param cells [array<#to_s>] the cell values to render
+      # @param widths [array<integer>] the column widths to left-justify against
+      # @return [string] the formatted row, with trailing whitespace stripped
       def format_row(cells, widths)
         cells.each_with_index.map do |cell, i|
-          cell.to_s.ljust(widths[i])
+          CGI.escapeHTML(cell.to_s.ljust(widths[i]))
         end.join(' | ').rstrip
       end
 
-      # Renders a +-+-+ separator sized to the given column widths.
+      # renders a +-+-+ separator sized to the given column widths.
       #
-      # @param widths [Array<Integer>] the column widths
-      # @return [String] the separator line
+      # @param widths [array<integer>] the column widths
+      # @return [string] the separator line
       def separator(widths)
         widths.map { |w| '-' * w }.join('-+-')
       end
 
       private
+
+      def table_rows(table, widths, title)
+        [
+          title_row(title, widths),
+          format_row(table.headers, widths),
+          separator(widths),
+          *table.rows.map { |row| format_row(row.cells, widths) }
+        ].compact
+      end
+
+      def title_row(title, widths)
+        return unless title
+
+        CGI.escapeHTML(title).center(total_width(widths)).rstrip
+      end
 
       def total_width(widths)
         widths.sum + ((widths.length - 1) * 3)
