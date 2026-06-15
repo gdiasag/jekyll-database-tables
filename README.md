@@ -75,7 +75,7 @@ Starting a shell with the build environment provided in `flake.nix` provides you
 
 ### Others
 
-Requires [Ruby] v3.2+ and [Bundler] v2.7+.
+Requires [Ruby] v3.3+ and [Bundler] v2.7+.
 
 ``` bash
 git clone https://github.com/gdiasag/jekyll-database-tables

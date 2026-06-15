@@ -26,9 +26,11 @@ jobs:
         run: |
           bundle exec rubocop
           bundle exec rake test
-      - name: Release
-        run: bundle exec rake release
+      - name: Build gem
+        run: gem build jekyll-database-tables.gemspec
+      - name: Push gem
+        run: gem push jekyll-database-tables-*.gem
       - name: Attest
         uses: actions/attest@v4
         with:
-          subject-path: pkg/*.gem
+          subject-path: jekyll-database-tables-*.gem
