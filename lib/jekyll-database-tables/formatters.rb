@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'cgi'
+
 module Jekyll
   module DatabaseTables
     # Abstract base class for table formatters.
@@ -81,7 +83,7 @@ module Jekyll
         widths = column_widths(table)
 
         lines = +''
-        lines << "#{title.center(total_width(widths)).rstrip}\n" if title
+        lines << "#{CGI.escapeHTML(title).center(total_width(widths)).rstrip}\n" if title
 
         lines << format_row(table.headers, widths)
         lines << "\n"
@@ -103,7 +105,7 @@ module Jekyll
       # @return [String] the formatted row, with trailing whitespace stripped
       def format_row(cells, widths)
         cells.each_with_index.map do |cell, i|
-          cell.to_s.ljust(widths[i])
+          CGI.escapeHTML(cell.to_s.ljust(widths[i]))
         end.join(' | ').rstrip
       end
 
